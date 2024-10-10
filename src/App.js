@@ -1,11 +1,10 @@
 import React from 'react'
+import Calculator from './components/Calculator'
 
 const App = () => {
   return (
     <>
-    <div className='text-[4rem] text-green-400 grid justify-center items-center h-screen w-full'>
-    <h1>try to make a fully functional calculator</h1>
-    </div>
+    <Calculator/>
     </>
   )
 }
