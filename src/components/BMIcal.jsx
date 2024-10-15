@@ -9,7 +9,7 @@ const BMIcal = () => {
 
     const handler = (e) =>{
         e.preventDefault();
-        if (a=== 0 || b=== 0) {
+        if (a== 0 && b== 0) {
             alert("Enter a Solid Value")
         }else {
             let x = (a/(b*b)*703).toFixed(2)

@@ -1,69 +1,107 @@
 import React, { useState } from 'react';
 
 const Practice = () => {
-  const [optr, setOptr] = useState(null);
-  const [x, setX] = useState(null);
-  const [y, setY] = useState(null);
+  const [inputs, setInputs] = useState({ x: '', y: '' });
   const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
 
-  const handle = () => {
-    let a;
-    if (optr === "+") {
-      a = x + y;
-    } else if (optr === "-") {
-      a = x - y;
-    } else if (optr === "*") {
-      a = x * y;
-    } else if (optr === "/") {
-      a = x / y;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (isNaN(value)) {
+      setError(`Please enter a valid number in ${name}`);
     } else {
-      a = "Give a valid number...";
+      setError('');
+      setInputs((prev) => ({ ...prev, [name]: value }));
     }
-    setResult(a);
   };
 
-  const Clear = () => {
-    setOptr(null);   
-    setX(null);   
-    setY(null);     
-    setResult(null); 
+  const calculateResult = (operator) => {
+    const { x, y } = inputs;
+    const numX = parseFloat(x);
+    const numY = parseFloat(y);
+
+    if (isNaN(numX) || isNaN(numY)) {
+      setError('Both fields must contain numbers');
+      return;
+    }
+
+    let calcResult;
+    switch (operator) {
+      case '+':
+        calcResult = numX + numY;
+        break;
+      case '-':
+        calcResult = numX - numY;
+        break;
+      case '*':
+        calcResult = numX * numY;
+        break;
+      case '/':
+        calcResult = numY !== 0 ? numX / numY : 'Cannot divide by zero';
+        break;
+      default:
+        calcResult = 'Invalid operation';
+    }
+
+    setResult(calcResult);
+    setInputs({ x: '', y: '' }); // Clear input fields after calculation
+  };
+
+  const clearAll = () => {
+    setInputs({ x: '', y: '' });
+    setResult(null);
+    setError('');
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Simple Calculator</h1>
-      <div className="mb-4 space-x-2">
-        <input
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-          value={x || ''} 
-          onChange={(e) => setX(Number(e.target.value))}
-          type="number"
-          placeholder="Enter first number"
-        />
-        <input
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-          value={y || ''}  
-          onChange={(e) => setY(Number(e.target.value))}
-          type="number"
-          placeholder="Enter second number"
-        />
+      <div className="bg-white p-8 shadow-lg rounded-lg border border-gray-300">
+        <h1 className="text-2xl font-bold mb-6 text-center">Generic Calculator</h1>
+
+        {/* Input fields */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          {['x', 'y'].map((name) => (
+            <div key={name}>
+              <input
+                className="p-3 border border-gray-300 rounded-md text-center focus:outline-none focus:border-blue-500"
+                value={inputs[name]}
+                name={name}
+                onChange={handleInputChange}
+                placeholder={`Enter ${name === 'x' ? 'first' : 'second'} number`}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Error message */}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+        {/* Operator buttons */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {['+', '-', '*', '/'].map((operator) => (
+            <button
+              key={operator}
+              className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-xl"
+              onClick={() => calculateResult(operator)}
+            >
+              {operator}
+            </button>
+          ))}
+        </div>
+
+        {/* Clear button */}
+        <div className="grid grid-cols-1 gap-4">
+          <button
+            className="px-4 py-3 bg-red-200 text-black rounded-md hover:bg-red-900"
+            onClick={clearAll}
+          >
+            C
+          </button>
+        </div>
+
+        {/* Result */}
+        <h2 className="text-2xl font-bold text-center mt-6">Result: {result}</h2>
       </div>
-      <div className="mb-4 space-x-2">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          onClick={() => setOptr("+")} >+</button>
-        <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-          onClick={() => setOptr("-")}>-</button>
-        <button className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-          onClick={() => setOptr("*")}>*</button>
-        <button className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-          onClick={() => setOptr("/")}>/</button>
-        <button className="px-4 py-2 bg-red-200 text-white rounded-md hover:bg-red-900"
-          onClick={Clear}>C</button>
-      </div>
-      <button className="px-6 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 mb-4"
-        onClick={handle}>Calculate</button>
-      <h2 className="text-xl">Result: {result}</h2>
     </div>
   );
 };

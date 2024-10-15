@@ -7,8 +7,8 @@ const App = () => {
   return (
     <>
     {/* <BasicCal/> */}
-    {/* <Practice/> */}
-      <BMIcal/>    
+    <Practice/>
+      {/* <BMIcal/>     */}
     </>
   )
 }
