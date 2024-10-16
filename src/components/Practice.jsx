@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { GrPowerReset } from "react-icons/gr"; // Import the icon
 
 const Practice = () => {
   const [inputs, setInputs] = useState({ x: '', y: '' });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [history, setHistory] = useState([]); // Store history of calculations
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,6 +46,13 @@ const Practice = () => {
     }
 
     setResult(calcResult);
+
+    // Save the history of calculation
+    setHistory((prev) => [
+      ...prev,
+      { x: numX, y: numY, operator, result: calcResult },
+    ]);
+
     setInputs({ x: '', y: '' }); // Clear input fields after calculation
   };
 
@@ -51,6 +60,10 @@ const Practice = () => {
     setInputs({ x: '', y: '' });
     setResult(null);
     setError('');
+  };
+
+  const clearHistory = () => {
+    setHistory([]); // Clear the history
   };
 
   return (
@@ -90,7 +103,7 @@ const Practice = () => {
         </div>
 
         {/* Clear button */}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 mb-4">
           <button
             className="px-4 py-3 bg-red-200 text-black rounded-md hover:bg-red-900"
             onClick={clearAll}
@@ -101,6 +114,32 @@ const Practice = () => {
 
         {/* Result */}
         <h2 className="text-2xl font-bold text-center mt-6">Result: {result}</h2>
+
+        {/* Calculation History Section with Clear History Button */}
+        <div className="mt-8 flex items-center justify-between">
+          <h3 className="text-xl font-semibold mb-4">Calculation History:</h3>
+
+          {/* Clear History Button with GrPowerReset Icon */}
+          <button
+            className="flex items-center justify-center p-2 rounded-full"
+            onClick={clearHistory}
+            title="Clear History"
+          >
+            {/* Using GrPowerReset Icon */}
+            <GrPowerReset className="w-6 h-6 bg-white"  />
+          </button>
+        </div>
+
+        {/* Calculation History */}
+        <div className="mt-4">
+          <ul className="list-disc pl-6">
+            {history.map((entry, index) => (
+              <li key={index} className="mb-2">
+                {entry.x} {entry.operator} {entry.y} = {entry.result}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
